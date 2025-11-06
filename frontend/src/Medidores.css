@@ -1,0 +1,19 @@
+.Medidores-start {
+    display: flex;
+    flex-direction: column;
+    gap: 3em
+}
+
+.counter-desc {
+    display: flex;
+    flex-direction: row;
+    gap: 2em;
+}
+
+.flow-chart{
+    display: flex;
+    flex-direction: column;
+    height: 400px;
+    width: 100%;
+    margin-top: 10px;
+}
