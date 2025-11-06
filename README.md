@@ -21,3 +21,9 @@ npm run start
 - Philippe Pefaur
 - Bárbara Peña
 - Martín Rigloi
+
+# Licencia
+
+Copyright © 2025 Philippe Pefaur
+
+Todos los derechos reservados. Este proyecto es de código cerrado y no está disponible para uso, distribución o modificación sin autorización explícita de los autores.
