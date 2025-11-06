@@ -1,9 +1,10 @@
 import './App.css';
+import Medidores from './Medidores';
 
 function App() {
   return (
     <div>
-      <h1>Hola mundo</h1>
+      <Medidores></Medidores>
     </div>
   );
 }
