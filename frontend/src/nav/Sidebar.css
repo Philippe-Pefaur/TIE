@@ -1,0 +1,60 @@
+.side-ItemBtn.btn {
+    background-color: #16191b;
+    color: #f0f0f0;
+    min-height: 75px;
+    width: 100%;
+    border-radius: 0;
+    text-align: left;
+    padding-left: 46px;
+    border: none !important;
+
+    transition: all 0.3s ease
+}
+
+.side-ItemBtn.btn:hover {
+    background-color: #2b3136;
+    color: #fffba8;
+    border: none !important;
+    padding-left: 76px;
+}   
+
+.side-ItemBtn.btn:focus {
+    background-color: #16191b !important;
+    color: #fffba8 !important;
+    padding-left: 76px;
+    border: none !important;
+    border-left: 4px solid #fffba8 !important;
+    box-shadow: none !important;
+    outline: none;
+}
+
+.side-ItemBtn.btn:active {
+    background-color: #2b3136 !important;
+    color: #fffba7 !important;
+    padding-left: 76px;
+    border: none !important;
+    border-left: 4px solid #fffba8 !important;
+    box-shadow: none !important;
+    outline: none !important;
+}
+
+.side-ItemBtn.btn.presionado {
+    background-color: #2b3136 !important;
+    color: #fffba7 !important;
+    padding-left: 76px;
+    border: none !important;
+    border-left: 4px solid #fffba8 !important;
+    box-shadow: none !important;
+    outline: none !important;
+}
+
+.side-title {
+    min-height: 75px;
+
+    display: flex;
+    align-items: center;
+
+    padding-left: 16px;
+    background-color: #16191b !important;
+    color: #f0f0f0;
+}
