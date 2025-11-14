@@ -5,17 +5,56 @@ const cors = require('cors');
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-function agregarConsumo(data) {
-    const dataDir = path.join(__dirname, `data/${data.fecha.substring(3, 10)}`);
-    if (!fs.existsSync(dataDir)) {
+function agregarRegistro(fecha) { // Agrega un día al registro liviano
+    const rutaArchivo = path.join(__dirname, 'data/registro.json');
+    const dia = fecha.substring(0,2);
+
+    if (!fs.existsSync(rutaArchivo)) { // Si no existe el archivo de registros, crearlo
+        result = { // Registro en JSON
+            [fecha.substring(3,10)]: [dia] // Clave: Mes, Valor: Día
+        };
+
+        fs.writeFileSync(rutaArchivo, JSON.stringify(result, null, 2)); // Escribir el archivo
+        console.log(`Dato guardado en ${rutaArchivo}`);
+
+        return; // Terminar el proceso
+    }
+
+    // Si el archivo ya existe, agregar registro
+    const contenido = fs.readFileSync(rutaArchivo, 'utf8'); // Leer el archivo
+    result = JSON.parse(contenido);
+
+    if (!result[fecha.substring(3,10)]) { // Si no existe un registro para el mes
+        result[fecha.substring(3,10)] = [dia];  // Crear la clave del mes y agregar el día
+
+        fs.writeFileSync(rutaArchivo, JSON.stringify(result, null, 2)); // Escribir el archivo
+        console.log(`Dato guardado en ${rutaArchivo}`);
+
+        return;
+    }
+    
+    // Si ya hay registros para el mes
+    if (!result[fecha.substring(3,10)].includes(dia)) { // Sólo si el día no esta registrado, agregarlo
+        result[fecha.substring(3,10)].push(dia);
+    }
+    
+    fs.writeFileSync(rutaArchivo, JSON.stringify(result, null, 2)); // Escribir el archivo
+    console.log(`Dato guardado en ${rutaArchivo}`);
+
+    return;
+}
+
+function agregarConsumo(data) { // Agregar o crear archivo de datos de consumo
+    const dataDir = path.join(__dirname, `data/${data.fecha.substring(3, 10)}`); // Obtener el directorio del mes
+    if (!fs.existsSync(dataDir)) { // Si el directorio del mes no existe, crearlo
         fs.mkdirSync(dataDir);
     }
 
     const nombreArchivo = `consumo-${data.fecha}.json`;
-    const rutaArchivo = path.join(dataDir, nombreArchivo);
+    const rutaArchivo = path.join(dataDir, nombreArchivo); // Obtener archivo de datos del día
 
-    if (!fs.existsSync(rutaArchivo)) {
-        result = {
+    if (!fs.existsSync(rutaArchivo)) { // Si no existe, crearlo
+        result = { // Datos en JSON
             fecha: data.fecha,
             horas: [data.horaLocal],
             consumo: [data.consumo],
@@ -25,15 +64,19 @@ function agregarConsumo(data) {
             perdida: [data.perdida]
         };
 
-        fs.writeFileSync(rutaArchivo, JSON.stringify(result, null, 2));
+        fs.writeFileSync(rutaArchivo, JSON.stringify(result, null, 2)); // Escribir el archivo
         console.log(`Dato guardado en ${rutaArchivo}`);
 
-        return;
+        agregarRegistro(data.fecha); // Agregar registro del día
+
+        return; // Terminar el proceso
     }
 
-    const contenido = fs.readFileSync(rutaArchivo, 'utf8');
+    // Si el archivo ya existe
+    const contenido = fs.readFileSync(rutaArchivo, 'utf8'); // Leer el archivo
     result = JSON.parse(contenido);
 
+    // Agregar los datos nuevos a los ya existentes
     result.horas.push(data.horaLocal);
     result.consumo.push(data.consumo);
     result.generacion.push(data.generacion);
@@ -41,8 +84,12 @@ function agregarConsumo(data) {
     result.consumoSuministroGeneral.push(data.suministroGeneral);
     result.perdida.push(data.perdida);
 
-    fs.writeFileSync(rutaArchivo, JSON.stringify(result, null, 2));
+    fs.writeFileSync(rutaArchivo, JSON.stringify(result, null, 2)); // Escribir el archivo
     console.log(`Dato guardado en ${rutaArchivo}`);
+
+    agregarRegistro(data.fecha); // Agregar registro del día
+
+    return;
 }
 
 app.use(cors({
