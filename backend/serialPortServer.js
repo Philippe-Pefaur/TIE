@@ -3,7 +3,7 @@ const { ReadlineParser } = require('@serialport/parser-readline');
 
 let port;
 let parser;
-const RECONNECT_INTERVAL = 5000; // Intervalo de reconexión (default 5000ms)
+const RECONNECT_INTERVAL = 5000; // Intervalo de reconexión (default 5000 ms)
 const API_URL = 'http://localhost:5000/api'; // Dirección de la API de procesamiento final de datos
 
 async function enviarDatos(datos) { // Función para enviar datos obtenidos del Arduino a la API

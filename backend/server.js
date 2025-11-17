@@ -10,7 +10,7 @@ function agregarRegistro(fecha) { // Agrega un día al registro liviano
     const dia = fecha.substring(0,2);
 
     if (!fs.existsSync(rutaArchivo)) { // Si no existe el archivo de registros, crearlo
-        result = { // Registro en JSON
+        const result = { // Registro en JSON
             [fecha.substring(3,10)]: [dia] // Clave: Mes, Valor: Día
         };
 
@@ -22,7 +22,7 @@ function agregarRegistro(fecha) { // Agrega un día al registro liviano
 
     // Si el archivo ya existe, agregar registro
     const contenido = fs.readFileSync(rutaArchivo, 'utf8'); // Leer el archivo
-    result = JSON.parse(contenido);
+    const result = JSON.parse(contenido);
 
     if (!result[fecha.substring(3,10)]) { // Si no existe un registro para el mes
         result[fecha.substring(3,10)] = [dia];  // Crear la clave del mes y agregar el día
@@ -44,6 +44,66 @@ function agregarRegistro(fecha) { // Agrega un día al registro liviano
     return;
 }
 
+function actualizarResumenSemanal(data) { // Funcion para crear o actualizar datos de resumen semanal
+    console.log(data);
+    // Obtener fecha de los datos
+    const[dia, mes, año] = data.fecha.split('-');
+    const fecha = new Date(año, mes-1, dia);
+
+    // Obetener semana de los datos
+    const diaSemana = (fecha.getDay() + 6) % 7; // Obtener día de la semana [0-6], 0: Lunes, 6: Domingo
+    const inicioSemana = new Date(fecha);
+    inicioSemana.setDate(fecha.getDate() - diaSemana); // Obtener fecha del lunes de la semana corresopondiente
+
+    // Formatear fecha a string
+    const diaInicio = String(inicioSemana.getDate()).padStart(2, '0');
+    const mesInicio = String(inicioSemana.getMonth() + 1).padStart(2, '0');
+    const añoInicio = inicioSemana.getFullYear();
+    const semana = `${diaInicio}-${mesInicio}-${añoInicio}`;
+
+    const rutaArchivo = path.join(__dirname, `data/${data.fecha.substring(3, 10)}/resumenSemana-${semana}.json`); // Obtener la dirección del archivo
+    
+    if (!fs.existsSync(rutaArchivo)) { // Si no existe, crearlo
+        const result = { // Datos en JSON
+            fecha: semana,
+            dias: [data.fecha.substring(0, 2)],
+            consumo: [data.consumo.reduce((acc, val) => acc + val, 0)],
+            generacion: [data.generacion.reduce((acc, val) => acc + val, 0)],
+            consumoSuministroGeneral: [data.consumoSuministroGeneral.reduce((acc, val) => acc + val, 0)],
+            perdida: [data.perdida.reduce((acc, val) => acc + val, 0)]
+        };
+
+        fs.writeFileSync(rutaArchivo, JSON.stringify(result, null, 2)); // Escribir el archivo
+
+        return; // Terminar el proceso
+    }
+
+    // Si el archivo ya existe
+    const contenido = fs.readFileSync(rutaArchivo, 'utf8'); // Leer el archivo
+    const result = JSON.parse(contenido);
+
+    if (result.dias.includes(data.fecha.substring(0, 2))) { // Si el día ya fué agregado
+        indice = result.dias.indexOf(data.fecha.substring(0, 2)) // Obtener el índice del día
+        
+        // Editar los consumos acumulados según el índice
+        result.consumo[indice] = data.consumo.reduce((acc, val) => acc + val, 0); 
+        result.generacion[indice] = data.generacion.reduce((acc, val) => acc + val, 0);
+        result.consumoSuministroGeneral[indice] = data.consumoSuministroGeneral.reduce((acc, val) => acc + val, 0);
+        result.perdida[indice] = data.perdida.reduce((acc, val) => acc + val, 0);
+    } else { // Si el día no ha sido agregado, agregar los datos nuevos
+        result.dias.push(data.fecha.substring(0, 2));
+        result.consumo.push(data.consumo.reduce((acc, val) => acc + val, 0));
+        result.generacion.push(data.generacion.reduce((acc, val) => acc + val, 0));
+        result.consumoSuministroGeneral.push(data.consumoSuministroGeneral.reduce((acc, val) => acc + val, 0));
+        result.perdida.push(data.perdida.reduce((acc, val) => acc + val, 0));
+    }
+
+    fs.writeFileSync(rutaArchivo, JSON.stringify(result, null, 2)); // Escribir el archivo
+    console.log(`Dato guardado en ${rutaArchivo}`);
+
+    return;
+}
+
 function agregarConsumo(data) { // Agregar o crear archivo de datos de consumo
     const dataDir = path.join(__dirname, `data/${data.fecha.substring(3, 10)}`); // Obtener el directorio del mes
     if (!fs.existsSync(dataDir)) { // Si el directorio del mes no existe, crearlo
@@ -54,7 +114,7 @@ function agregarConsumo(data) { // Agregar o crear archivo de datos de consumo
     const rutaArchivo = path.join(dataDir, nombreArchivo); // Obtener archivo de datos del día
 
     if (!fs.existsSync(rutaArchivo)) { // Si no existe, crearlo
-        result = { // Datos en JSON
+        const result = { // Datos en JSON
             fecha: data.fecha,
             horas: [data.horaLocal],
             consumo: [data.consumo],
@@ -68,6 +128,7 @@ function agregarConsumo(data) { // Agregar o crear archivo de datos de consumo
         console.log(`Dato guardado en ${rutaArchivo}`);
 
         agregarRegistro(data.fecha); // Agregar registro del día
+        actualizarResumenSemanal(result); // Actualizar resumen semanal
 
         return; // Terminar el proceso
     }
@@ -88,6 +149,7 @@ function agregarConsumo(data) { // Agregar o crear archivo de datos de consumo
     console.log(`Dato guardado en ${rutaArchivo}`);
 
     agregarRegistro(data.fecha); // Agregar registro del día
+    actualizarResumenSemanal(result); // Actualizar resumen semanal
 
     return;
 }
@@ -109,6 +171,32 @@ app.get('/api/:fecha', (req, res) => { // Función para obtener los datos de con
     }
 
     const content = fs.readFileSync(fileDir, 'utf8'); // Cargar el archivo y enviarlo como respuesta
+    result = JSON.parse(content);
+    res.status(200).json(result);
+});
+
+app.get('/api/semanal/:fecha', (req, res) => {
+    // Obtener fecha de los datos
+    const[dia, mes, año] = req.params.fecha.split('-');
+    const fecha = new Date(año, mes-1, dia);
+
+    // Obetener semana de los datos
+    const diaSemana = (fecha.getDay() + 6) % 7; // Obtener día de la semana [0-6], 0: Lunes, 6: Domingo
+    const inicioSemana = new Date(fecha);
+    inicioSemana.setDate(fecha.getDate() - diaSemana); // Obtener fecha del lunes de la semana corresopondiente
+
+    // Formatear fecha a string
+    const diaInicio = String(inicioSemana.getDate()).padStart(2, '0');
+    const mesInicio = String(inicioSemana.getMonth() + 1).padStart(2, '0');
+    const añoInicio = inicioSemana.getFullYear();
+    const semana = `${diaInicio}-${mesInicio}-${añoInicio}`;
+
+    const rutaArchivo = path.join(__dirname, `data/${req.params.fecha.substring(3, 10)}/resumenSemana-${semana}.json`); // Obtener la dirección del archivo
+    if (!fs.existsSync(rutaArchivo)) { // Si no existe responder con error
+        res.status(400).json({message: 'Resumen semanal no encontrado'});
+    }
+
+    const content = fs.readFileSync(rutaArchivo, 'utf8'); // Cargar el archivo y enviarlo como respuesta
     result = JSON.parse(content);
     res.status(200).json(result);
 })

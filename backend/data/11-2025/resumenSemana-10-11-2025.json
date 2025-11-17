@@ -1,0 +1,23 @@
+{
+  "fecha": "10-11-2025",
+  "dias": [
+    "10",
+    "14"
+  ],
+  "consumo": [
+    60,
+    32
+  ],
+  "generacion": [
+    90,
+    6
+  ],
+  "consumoSuministroGeneral": [
+    0,
+    26
+  ],
+  "perdida": [
+    0,
+    0
+  ]
+}
