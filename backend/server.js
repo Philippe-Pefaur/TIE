@@ -92,40 +92,40 @@ function agregarConsumo(data) { // Agregar o crear archivo de datos de consumo
     return;
 }
 
-app.use(cors({
+app.use(cors({ // Dar permiso de conexión a nivel local
     origin: 'http://localhost:3000'
 }));
-app.use(express.json());
+app.use(express.json()); // Cargar middleware para procesamiento de .JSON
 
-app.get('/api/heartbeat', (req, res) => {
+app.get('/api/heartbeat', (req, res) => { // Función para verificar respuesta del servidor
     res.status(200).send();
 });
 
-app.get('/api/:date', (req, res) => {
-    const month = req.params.date.substring(3, 10);
-    const fileDir = path.join(__dirname, `data/${month}/consumo-${req.params.date}.json`);
-    if (!fs.existsSync(fileDir)) {
+app.get('/api/:fecha', (req, res) => { // Función para obtener los datos de consumo de una fecha específica
+    const mes = req.params.fecha.substring(3, 10);
+    const fileDir = path.join(__dirname, `data/${mes}/consumo-${req.params.fecha}.json`); // Buscar el archivo correspondiente a la fecha
+    if (!fs.existsSync(fileDir)) { // Si no existe responder con error
         res.status(400).json({message: 'Fecha no encontrada'});
     }
 
-    const content = fs.readFileSync(fileDir, 'utf8');
+    const content = fs.readFileSync(fileDir, 'utf8'); // Cargar el archivo y enviarlo como respuesta
     result = JSON.parse(content);
     res.status(200).json(result);
 })
 
-app.post('/api', (req, res) => {
-    const required = ['consumo', 'generacion', 'bateria', 'suministroGeneral', 'perdida'];
+app.post('/api', (req, res) => { // Función para agregar datos de consumo
+    const required = ['consumo', 'generacion', 'bateria', 'suministroGeneral', 'perdida']; // Verificar que la request tenga los campos requeridos
     const missing = required.filter(elem => req.body[elem] === undefined || req.body[elem] === null);
     
-    if(missing.length > 0) {
+    if(missing.length > 0) { // Si falta algún campo responder con error y notificar
         return res.status(400).json({
             message: 'Faltan datos',
             camposFaltantes: missing
         });
     }
 
-    const ahora = new Date();
-    const dato = {
+    const ahora = new Date(); // Obtener la fecha y hora en la que se realiza el registro
+    const dato = { // Formato de datos pre procesamiento
         horaLocal: ahora.toLocaleTimeString('es-CL', {
             hour: '2-digit',
             minute: '2-digit',
@@ -140,11 +140,11 @@ app.post('/api', (req, res) => {
         perdida: req.body.perdida
     };
 
-    agregarConsumo(dato);
+    agregarConsumo(dato); // Crear archivo de datos de consumo
 
-    res.status(201).json(dato);
+    res.status(201).json(dato); // Responder con éxito
 });
 
-app.listen(PORT, () => {
+app.listen(PORT, () => { // Ejecutar la API en el puerto correspondiente
     console.log(`Servidor corriendo en http://localhost:${PORT}`);
 });

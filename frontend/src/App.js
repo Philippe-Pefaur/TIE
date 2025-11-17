@@ -8,7 +8,7 @@ import { useReducer, createContext } from 'react';
 
 export const ContextVistaPrincipal = createContext();
 
-function reducerVista(state, action) {
+function reducerVista(state, action) { // Función para editar variable de vista principal
     switch(action.type) {
         case 'Diario':
             return Diario;
@@ -21,8 +21,16 @@ function reducerVista(state, action) {
   }
 }
 
+/*
+La App es una grilla de tres contenedores cada uno con una vista,
+la Navbar (barra superior), Sidebar y VistaPrincipal. La Sidebar 
+permite seleccionar cuál de las vistas de métrica se desean mostrar,
+esta vista es luego pasada a la variable VistaPrincipal, cargandose
+así en la página
+*/
+
 function App() {
-    const [VistaPrincipal, dispatch] = useReducer(reducerVista, Diario);
+    const [VistaPrincipal, dispatch] = useReducer(reducerVista, Diario); // Variable de vista principal
 
     return (
         <ContextVistaPrincipal.Provider value={{VistaPrincipal, dispatch}}>

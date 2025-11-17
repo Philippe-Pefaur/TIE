@@ -14,7 +14,7 @@ import './Diario.css';
 import { useState } from 'react';
 import { useEffect } from 'react';
 
-ChartJS.register(
+ChartJS.register( // Cargar librerías importadas para gráficos de línea
   CategoryScale,
   LinearScale,
   PointElement,
@@ -25,28 +25,28 @@ ChartJS.register(
   Filler
 );
 
-async function getTodayData() {
+async function obtenerDatosDiario() { // Función para obtener datos de consumo diarios
     try {
-        const ahora = new Date();
+        const ahora = new Date(); // utiliza la fecha actual para seleccionar el día
         const fecha = ahora.toLocaleDateString('es-CL'); // Formato: dd-mm-yyyy
-        
-        console.log(`http://localhost:5000/api/${fecha}`);
 
-        const response = await fetch(`http://localhost:5000/api/${fecha}`);
+        const response = await fetch(`http://localhost:5000/api/${fecha}`); // Pedir datos a la API
 
-        if (!response.ok) {
+        if (!response.ok) { // Si no se recibe respuesta arrojar error
             throw new Error(`Error: ${response.status}`);
         }
         
-        const data = await response.json();
+        const data = await response.json(); // Procesar los datos como .JSON y retornarlo
         return data;
-    } catch (error) {
+
+    } catch (error) { // Notificar el error y retornar NULL
         console.error('Error al obtener los datos:', error);
         return null;
     }
 }
 
-function Diario() {
+function Diario() { // Función que crea las variables con los datos y configuración de los gráficos
+    // Varaibles de plantilla donde almacenar los datos para los gráficos
     const [lineConsumo, setLineConsumo] = useState({
         labels: [],
         datasets: [
@@ -86,18 +86,20 @@ function Diario() {
         ]
     });
     
-    const [data, setData] = useState({
+    // Variable para guardar datos de consumo acumulado durante el día
+    const [data, setData] = useState({ 
         consumoTotal: 0,
         consumoSuministroGeneralTotal: 0,
         generacionTotal: 0,
         perdidaTotal: 0
     })
 
-    useEffect(() => {
-        const cargarDatos = async () => {
-            const datos = await getTodayData();
-            console.log(datos);
-            if (datos) {
+    // Efecto a ser ejecutado en cuanto se inicie la App
+    useEffect(() => { // Obtener y procesar datos de consumo
+        const cargarDatos = async () => {  // Función a ejecutar
+            const datos = await obtenerDatosDiario(); // Obtener datos de la API
+            if (datos) { // Si la respuesta no es NULL
+                // Crear objetos con los datos de los gráficos
                 const templateConsumo = {
                     labels: datos.horas,
                     datasets: [
@@ -155,9 +157,13 @@ function Diario() {
                         }
                     ]
                 };
+
+                // Pasar los objetos a las variables de plantilla
                 setLineConsumo(templateConsumo);
                 setLineBateria(templateBateria);
                 setLinePerdida(templatePerdida);
+
+                // Calcular consumos acumulados y guardarlos
                 setData((current) => {
                     current.consumoTotal = datos.consumo.reduce((acc, val) => acc + val, 0);
                     current.consumoSuministroGeneralTotal = datos.consumoSuministroGeneral.reduce((acc, val) => acc + val, 0);
@@ -168,9 +174,11 @@ function Diario() {
             }
         };
         
+        // Ejecutar la función
         cargarDatos();
     }, [])
 
+    // Variables de plantilla de configuraciones de los gráficos
     const opcionesBateria = {
         responsive: true,
         maintainAspectRatio: false,
@@ -204,7 +212,6 @@ function Diario() {
             }
         }
     };
-
     const opcionesConsumo = {
         responsive: true,
         maintainAspectRatio: false,
@@ -238,7 +245,6 @@ function Diario() {
             }
         }
     };
-
     const opcionesPerdida = {
         responsive: true,
         maintainAspectRatio: false,
@@ -272,7 +278,7 @@ function Diario() {
             }
         }
     };
-
+    
     return(
         <div className='Diario-start'>
             <div className='counter-desc'>

@@ -3,16 +3,16 @@ import { useContext, useState } from 'react';
 import './Sidebar.css';
 
 function Sidebar() {
-    const {vistaPrincipal, dispatch} = useContext(ContextVistaPrincipal);
-    const [botonActivo, setBotonActivo] = useState('Diario');
+    const {vistaPrincipal, dispatch} = useContext(ContextVistaPrincipal); // Contexto de cuál vista está mostrandose actualmente
+    const [botonActivo, setBotonActivo] = useState('Diario'); // Variable para rastrear cuál botón está activo
 
-    const click = (vista) => {
+    const click = (vista) => { // Al hacer click en un botón cambiar a la vista correspondiente y guardarlo como botón activo
         setBotonActivo(vista);
         dispatch({type: vista});
     };
 
-    return (
-        <div className="sidebar bg-light">
+    return ( // Se utilizan operadores ? : para saber si el botón está activo o no, al comparar la variable botonActivo con el nombre de la vista correspondiente
+        <div className="sidebar bg-light"> 
             <ul className="nav flex-column">
                 <li>
                     <div className='side-title'>
