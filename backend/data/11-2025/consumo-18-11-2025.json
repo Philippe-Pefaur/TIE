@@ -1,0 +1,27 @@
+{
+  "fecha": "18-11-2025",
+  "horas": [
+    "17:06:33",
+    "18:59:02"
+  ],
+  "consumo": [
+    10,
+    13
+  ],
+  "generacion": [
+    2,
+    2
+  ],
+  "bateria": [
+    60,
+    65
+  ],
+  "consumoSuministroGeneral": [
+    8,
+    11
+  ],
+  "perdida": [
+    0,
+    0
+  ]
+}
