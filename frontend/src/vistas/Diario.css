@@ -9,7 +9,7 @@
     display: flex;
     flex-direction: row;
     gap: 2em;
-    margin-top: 18px;
+    margin-top: 13px;
 }
 
 .flow-chart{
@@ -18,4 +18,47 @@
     height: 400px;
     width: 100%;
     margin-top: 10px;
+}
+
+.Diario-selector{
+    margin-top: 18px;
+    background-color: #16191b;
+    color: #f0f0f0;
+    border: none;
+    outline: none;
+}
+
+.Diario-selector:focus {
+    border: none;
+    outline: none;
+    box-shadow: none;
+}
+
+.Diario-selector:hover {
+    border: none;
+    outline: none;
+}
+
+.Diario-selector:focus-visible {
+    border: none;
+    outline: none;
+}
+
+.Diario-opcion {
+    border: none;
+    outline: none;
+    background-color: #16191b;
+    color: #f0f0f0;
+}
+
+.Diario-opcion:hover {
+    border: none;
+    outline: none;
+    background-color: #1e2225;
+}
+
+.Diario-opcion:focus {
+    border: none;
+    outline: none;
+    box-shadow: none;
 }

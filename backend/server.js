@@ -292,6 +292,19 @@ app.get('/api/mensual/:fecha', (req, res) => {
     res.status(200).json(result);
 })
 
+app.get('/api/registro/diario/:fecha', (req, res) => {
+    const rutaArchivo = path.join(__dirname, "data/registro.json"); // Obtener la dirección del archivo
+    if (!fs.existsSync(rutaArchivo)) { // Si no existe responder con error
+        res.status(400).json({message: 'Resumen semanal no encontrado'});
+    }
+    const content = fs.readFileSync(rutaArchivo, 'utf8'); // Cargar el archivo y enviarlo como respuesta
+    const result = JSON.parse(content);
+
+    const dias = result[req.params.fecha.substring(3,10)].dias;
+    const diasConFecha = dias.map(dia => `${dia}-${req.params.fecha.substring(3,10)}`);
+    res.status(200).json({response: diasConFecha});
+})
+
 app.post('/api', (req, res) => { // Función para agregar datos de consumo
     const required = ['consumo', 'generacion', 'bateria', 'suministroGeneral', 'perdida']; // Verificar que la request tenga los campos requeridos
     const missing = required.filter(elem => req.body[elem] === undefined || req.body[elem] === null);
