@@ -460,6 +460,7 @@ app.get('/api/heartbeat', (req, res) => { // Función para verificar respuesta d
 });
 
 app.get('/api/devices', async (req, res) => {
+    console.log(selectedDevice);
     try {
         console.log('Iniciando escaneo de red...');
         const result = await scanDevicesWithDetails();

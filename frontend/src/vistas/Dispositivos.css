@@ -1,0 +1,155 @@
+.Dispositivos-start {
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: 100vh;
+    width: 30%;
+    background-color: #16191b;
+    border-left: 2px solid #3a3f44;
+    box-shadow: -4px 0 10px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+    overflow-y: auto;
+    color: #e1e1e1;
+}
+
+.Dispositivos-title {
+    padding: 20px;
+}
+
+.Dispositivos-lista {
+    list-style: none;
+    padding: 0;
+}
+
+.Dispositivos-item {
+    width: 100%;
+}
+
+.Dispositivos-listaDesc {
+    color: #b3b3b3;
+}
+
+.Dispositivos-listaDiv {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}
+
+.Dispositivos-listaBoton {
+    background-color: #16191b;
+    color: #f0f0f0;
+    min-height: 75px;
+    width: 100%;
+    border-radius: 0;
+    text-align: left;
+    padding-left: 46px;
+    border: none !important;
+
+    transition: all 0.3s ease
+}
+
+.Dispositivos-listaBoton:hover {
+    background-color: #2b3136;
+    color: #fffba8;
+    border: none !important;
+    padding-left: 76px;
+}   
+
+.Dispositivos-listaBoton:focus {
+    background-color: #16191b !important;
+    color: #fffba8 !important;
+    padding-left: 76px;
+    border: none !important;
+    border-left: 4px solid #fffba8 !important;
+    box-shadow: none !important;
+    outline: none;
+}
+
+.Dispositivos-listaBoton:active {
+    background-color: #2b3136 !important;
+    color: #fffba7 !important;
+    padding-left: 76px;
+    border: none !important;
+    border-left: 4px solid #fffba8 !important;
+    box-shadow: none !important;
+    outline: none !important;
+}
+
+.Dispositivos-listaBoton.presionado {
+    background-color: #2b3136 !important;
+    color: #fffba7 !important;
+    padding-left: 76px;
+    border: none !important;
+    border-left: 4px solid #fffba8 !important;
+    box-shadow: none !important;
+    outline: none !important;
+}
+
+/* Estilos para carga */
+.Dispositivos-cargando {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 300px;
+    gap: 20px;
+}
+
+.Dispositivos-spinner {
+    width: 50px;
+    height: 50px;
+    border: 4px solid #3a3f44;
+    border-top: 4px solid #fffba7;
+    border-radius: 50%;
+    animation: Dispositivos-spin 1s linear infinite;
+}
+
+@keyframes Dispositivos-spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.Dispositivos-cargandoTexto {
+    font-size: 16px;
+    color: #b3b3b3;
+    margin: 0;
+    animation: Dispositivos-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes Dispositivos-pulse {
+    0%, 100% { opacity: 0.6; }
+    50% { opacity: 1; }
+}
+
+.Dispositivos-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    padding-right: 15px;
+}
+
+.Dispositivos-cerrar {
+    background: none;
+    border: none;
+    color: #b3b3b3;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.Dispositivos-cerrar:hover {
+    color: #fffba8;
+}
+
+.Dispositivos-title {
+    padding: 0;
+    margin: 0;
+    flex: 1;
+}
