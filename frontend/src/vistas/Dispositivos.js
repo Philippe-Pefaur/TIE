@@ -74,7 +74,7 @@ async function conectar(dispositivo) {
 }
 
 function Dispositivos() {
-    const {configDispositivo, dispatchDispositivo} = useContext(ContextDispositivos)
+    const {dispatchDispositivo} = useContext(ContextDispositivos)
     const [listaDispositivos, setListaDispositivos] = useState([]);
     const [cargando, setCargando] = useState(true);
     const [cargandoDatos, setCargandoDatos] = useState(false);
