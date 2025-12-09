@@ -8,12 +8,30 @@
     border-left: 2px solid #3a3f44;
     box-shadow: -4px 0 10px rgba(0, 0, 0, 0.3);
     z-index: 1000;
-    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
     color: #e1e1e1;
+}
+
+.Dispositivos-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    padding-right: 15px;
+    flex-shrink: 0;
+    border-bottom: 2px solid #3a3f44;
 }
 
 .Dispositivos-title {
     padding: 20px;
+}
+
+.Dispositivos-contenedor {
+    margin-top: 10px;
+    flex: 1;
+    overflow-y: auto;
+    padding: 0 20px;
 }
 
 .Dispositivos-lista {
@@ -44,7 +62,6 @@
     text-align: left;
     padding-left: 46px;
     border: none !important;
-
     transition: all 0.3s ease
 }
 
@@ -85,13 +102,12 @@
     outline: none !important;
 }
 
-/* Estilos para carga */
 .Dispositivos-cargando {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: 300px;
+    flex: 1;
     gap: 20px;
 }
 
@@ -142,6 +158,7 @@
     align-items: center;
     justify-content: center;
     transition: all 0.3s ease;
+    flex-shrink: 0;
 }
 
 .Dispositivos-cerrar:hover {
@@ -152,4 +169,43 @@
     padding: 0;
     margin: 0;
     flex: 1;
+}
+
+.Dispositivos-divrecargar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    padding-top: 10px;
+    flex-shrink: 0;
+    border-top: 2px solid #3a3f44;
+}
+
+.Dispositivos-recargar {
+    border: none;
+    color: #b3b3b3;
+    background-color: #16191b;
+    cursor: pointer;
+}
+
+
+.Dispositivos-recargar:hover {
+    color: #fffba8;
+}
+
+.Dispositivos-contenedor::-webkit-scrollbar {
+    width: 6px;
+}
+
+.Dispositivos-contenedor::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.Dispositivos-contenedor::-webkit-scrollbar-thumb {
+    background: #3a3f44;
+    border-radius: 4px;
+}
+
+.Dispositivos-contenedor::-webkit-scrollbar-thumb:hover {
+    background: #3a3f44;
 }

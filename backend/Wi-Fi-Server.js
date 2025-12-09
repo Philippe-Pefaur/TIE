@@ -16,8 +16,16 @@ let selectedDevice = {
     status: null
 };
 
+// Cache para getLocalNetwork para evitar recalcular en cada request
+let cachedLocalNetwork = null;
+
 // Función para obtener la IP local y subnet
 function getLocalNetwork() {
+    // Si ya tenemos el resultado cacheado, devolverlo sin logs
+    if (cachedLocalNetwork !== null) {
+        return cachedLocalNetwork;
+    }
+
     const interfaces = os.networkInterfaces();
     
     // Primero intentar encontrar interfaces WiFi comunes
@@ -36,7 +44,8 @@ function getLocalNetwork() {
                     const ip = iface.address;
                     const subnet = ip.substring(0, ip.lastIndexOf('.'));
                     console.log(`Red WiFi detectada: ${interfaceName} - ${ip}`);
-                    return { ip, subnet, interface: interfaceName };
+                    cachedLocalNetwork = { ip, subnet, interface: interfaceName };
+                    return cachedLocalNetwork;
                 }
             }
         }
@@ -54,7 +63,8 @@ function getLocalNetwork() {
                     ip.startsWith('10.0.')) {
                     const subnet = ip.substring(0, ip.lastIndexOf('.'));
                     console.log(`Red detectada: ${interfaceName} - ${ip}`);
-                    return { ip, subnet, interface: interfaceName };
+                    cachedLocalNetwork = { ip, subnet, interface: interfaceName };
+                    return cachedLocalNetwork;
                 }
             }
         }
@@ -67,11 +77,13 @@ function getLocalNetwork() {
                 const ip = iface.address;
                 const subnet = ip.substring(0, ip.lastIndexOf('.'));
                 console.log(`Red detectada: ${interfaceName} - ${ip}`);
-                return { ip, subnet, interface: interfaceName };
+                cachedLocalNetwork = { ip, subnet, interface: interfaceName };
+                return cachedLocalNetwork;
             }
         }
     }
     
+    cachedLocalNetwork = null;
     return null;
 }
 
@@ -127,7 +139,7 @@ function getMacAddress(ip) {
 // Función para obtener hostname de una IP
 function getHostname(ip) {
     return new Promise((resolve) => {
-        exec(`ping -n 1 -a ${ip}`, { timeout: 2000 }, (error, stdout) => {
+        exec(`ping -n 1 -a ${ip}`, { timeout: 3000 }, (error, stdout) => {
             if (error) {
                 resolve(null);
                 return;
@@ -136,6 +148,15 @@ function getHostname(ip) {
             // Intentar extraer el hostname del resultado
             const match = stdout.match(/Haciendo ping a ([^\s\[]+)/i);
             if (match && match[1] !== ip) {
+                const ahora = new Date();
+                const horaConSegundos = ahora.toLocaleTimeString('es-CL', {
+                    minute: '2-digit',
+                    hour: '2-digit',
+                    second: '2-digit',
+                    hour12: false
+                });
+                console.log(horaConSegundos);
+                console.log(match);
                 resolve(match[1]);
             } else {
                 resolve(null);
@@ -460,7 +481,6 @@ app.get('/api/heartbeat', (req, res) => { // Función para verificar respuesta d
 });
 
 app.get('/api/devices', async (req, res) => {
-    console.log(selectedDevice);
     try {
         console.log('Iniciando escaneo de red...');
         const result = await scanDevicesWithDetails();

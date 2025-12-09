@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import './Dispositivos.css';
 import { ContextDispositivos } from '../App';
 import { useState } from 'react';
@@ -78,6 +78,7 @@ function Dispositivos() {
     const [listaDispositivos, setListaDispositivos] = useState([]);
     const [cargando, setCargando] = useState(true);
     const [cargandoDatos, setCargandoDatos] = useState(false);
+    const setupExecuted = useRef(false); // Control para evitar ejecución doble
 
     async function setup() {
         setCargando(true);
@@ -119,7 +120,10 @@ function Dispositivos() {
     }
 
     useEffect(() => {
-        setup();
+        if (!setupExecuted.current) {
+            setupExecuted.current = true;
+            setup();
+        }
     }, []);
 
     return(
@@ -141,19 +145,27 @@ function Dispositivos() {
                     <p className='Dispositivos-cargandoTexto'>Recuperando datos del dispositivo...</p>
                 </div>
             ) : (
-                <ul className='Dispositivos-lista'>
-                    {listaDispositivos.map((dispositivo, index) => (
-                        <li className='Dispositivos-item' key={index}>
-                            <button className='Dispositivos-listaBoton' onClick={() => conectarCargar(dispositivo)}>
-                                <h3 className='Dispositivos-listNombre'>{dispositivo.hostname}</h3>
-                                <div className='Dispositivos-listaDiv'>
-                                    <p className='Dispositivos-listaDesc'>{dispositivo.ip}</p>
-                                    <p className='Dispositivos-listaDesc'>{dispositivo.mac}</p>
-                                </div>
-                            </button>
-                        </li>
-                    ))}
-                </ul>
+                <>
+                <div className='Dispositivos-contenedor'>
+                    <ul className='Dispositivos-lista'>
+                        {listaDispositivos.map((dispositivo, index) => (
+                            <li className='Dispositivos-item' key={index}>
+                                <button className='Dispositivos-listaBoton' onClick={() => conectarCargar(dispositivo)}>
+                                    <h3 className='Dispositivos-listNombre'>{dispositivo.hostname}</h3>
+                                    <div className='Dispositivos-listaDiv'>
+                                        <p className='Dispositivos-listaDesc'>{dispositivo.ip}</p>
+                                        <p className='Dispositivos-listaDesc'>{dispositivo.mac}</p>
+                                    </div>
+                                </button>
+                            </li>
+                        ))}
+                    </ul>
+                    
+                </div>
+                <div className='Dispositivos-divrecargar'>
+                    <button className='Dispositivos-recargar' onClick={() => setup()}>Volver a buscar</button>
+                </div>
+                </>
             )}
         </div>
     );

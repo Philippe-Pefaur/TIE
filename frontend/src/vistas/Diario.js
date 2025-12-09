@@ -339,6 +339,9 @@ function Diario() { // Función que crea las variables con los datos y configura
     return(
         <div className='Diario-start'>
             <select className='Diario-selector' onChange={(opcion) => dispatchFecha({type: "setFecha", task: opcion.target.value})}>
+                <option disabled selected>
+                    Automático: {fechaDatos}
+                </option>
                 {dias.map((fecha, index) => (
                     <option className='Diario-opcion' key={index} value={fecha}>
                         {fecha}

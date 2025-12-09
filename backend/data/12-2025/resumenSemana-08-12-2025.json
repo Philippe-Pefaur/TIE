@@ -1,18 +1,23 @@
 {
   "fecha": "08-12-2025",
   "dias": [
-    "08"
+    "08",
+    "09"
   ],
   "consumo": [
-    53
+    53,
+    77
   ],
   "generacion": [
-    40
+    40,
+    56
   ],
   "consumoSuministroGeneral": [
-    13
+    13,
+    21
   ],
   "perdida": [
+    0,
     0
   ]
 }
